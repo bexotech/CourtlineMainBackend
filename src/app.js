@@ -6,6 +6,9 @@ import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoute.js';
 import authRoutes from './routes/authRoutes.js'
 const app = express();
+import cookieParser from "cookie-parser";
+app.use(cookieParser());
+
 
 // Middleware
 app.use(
