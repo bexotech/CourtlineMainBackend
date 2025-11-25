@@ -24,19 +24,19 @@ router.put('/editEvent/:id',upload.single("image"),editEvent);
 router.delete('/deleteEvent/:id',deleteEvent);
 router.post('/logout', (req, res) => {
   try {
-    // Clear the token cookie
-    res.clearCookie('token', {
-      httpOnly: true,   // must match how it was set
-      secure: process.env.NODE_ENV === 'production', // if HTTPS
-      sameSite: 'lax',  // or 'strict' depending on your setup
-      path: '/',        // must match the path used when setting cookie
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/", 
     });
 
-    return res.status(200).json({ message: 'Logged out successfully' });
+    return res.status(200).json({ message: "Logged out successfully" });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'Logout failed' });
+    return res.status(500).json({ message: "Logout failed" });
   }
 });
+
 
 export default router;
