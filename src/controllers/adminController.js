@@ -522,7 +522,7 @@ export async function login(req, res) {
 
     // ✅ store token in HTTP-only cookie
     res.cookie("token", token, {
-      httpOnly: false, // prevents access via JavaScript
+      httpOnly: true, // prevents access via JavaScript
       secure: process.env.NODE_ENV === "production", // send only over HTTPS in production
       sameSite: "strict", // CSRF protection
       maxAge: 24 * 60 * 60 * 1000, // 1 day
