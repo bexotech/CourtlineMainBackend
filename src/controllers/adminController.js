@@ -484,7 +484,6 @@ export async function login(req, res) {
   }
 }
 
-
 export const addEvent = async (req, res) => {
   try {
     const { title, description, type } = req.body;

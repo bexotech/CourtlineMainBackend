@@ -1,5 +1,5 @@
 import express from 'express';
-import {getCourt,getSlot,bookSlot, getEvents, createOrder, verifyOrder} from '../controllers/usersController.js';
+import {getCourt,getSlot,bookSlot, getEvents, createOrder, verifyOrder,newsletterSignup, checkAvailability} from '../controllers/usersController.js';
 const router = express.Router();
 
 
@@ -12,8 +12,10 @@ router.get('/getEvents',getEvents)
 
 router.post("/createOrder",createOrder);
 router.post("/verifyOrder", verifyOrder); 
-
+router.post("/newsletter-signup", newsletterSignup);
+router.post("/checkAvailability", checkAvailability);
 // router.get("/",auth, getUsers);
 // router.post("/", createUser);
 
 export default router;
+// http://localhost:5000/api/users/newsletter-signup
