@@ -89,7 +89,7 @@ if (date.includes("/")) {
     };
 
     const normalizeTimeStr = (timeStr) => {
-      return timeStr.replace(/\s+/g, ' ').trim();
+      return timeStr ? timeStr.replace(/\s+/g, ' ').trim() : '';
     };
 
     const formatTo12Hour = (hour24, minute) => {
@@ -108,7 +108,11 @@ if (date.includes("/")) {
 
       const [startH, startM, startAMPM] = parseTime(startTime);
       const [endH, endM, endAMPM] = parseTime(endTime);
-      const [slotH, slotM] = length.split(":").map(Number);
+      
+      // Convert minutes to hours and minutes
+      const lengthInMinutes = parseInt(length);
+      const slotH = Math.floor(lengthInMinutes / 60);
+      const slotM = lengthInMinutes % 60;
 
       let currentH = startH + (startAMPM === "PM" && startH < 12 ? 12 : 0);
       let currentM = startM;
@@ -149,14 +153,7 @@ if (date.includes("/")) {
 
     const slotMap = new Map();
     dynamicSlots.forEach(s => slotMap.set(normalizeTimeStr(s.time), s));
-    console.log(
-      "Generated Slot Times:",
-      dynamicSlots.map(s => s.time)
-    );
-    console.log(
-      "Booked Slot Times:",
-      bookings.flatMap(b => b.slots.map(s => s.timeRange))
-    );
+    
 
 
     // ✅ MARK BOOKED SLOTS
@@ -179,7 +176,7 @@ if (date.includes("/")) {
     });
 
     editedSlots.forEach(editedSlot => {
-      const normalizedEditedTime = normalizeTimeStr(editedSlot.slotTime);
+      const normalizedEditedTime = normalizeTimeStr(editedSlot.timeRange);
 
       if (slotMap.has(normalizedEditedTime)) {
         const existingSlot = slotMap.get(normalizedEditedTime);
@@ -187,7 +184,7 @@ if (date.includes("/")) {
         slotMap.set(normalizedEditedTime, {
           ...existingSlot,
           price: Number(editedSlot.price) || existingSlot.price,
-          status: editedSlot.active === "true" || editedSlot.active === true
+          status: editedSlot.status === "available"
             ? existingSlot.status // Keep booked/available status
             : "inactive" // Admin disabled this slot
         });

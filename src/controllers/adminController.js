@@ -191,23 +191,34 @@ export async function weeklyBookings(req, res) {
 }
 
 
-
-
-
 export async function editSlots(req, res) {
   try {
     const { courtId, slots, date } = req.body;
-    // slots = [{ time: "07:00 - 08:00", price: 2000, active: true }, ...]
+    
+    console.log('editSlots request:', { courtId, slots, date });
+    
+    // Validate required fields
+    if (!courtId) {
+      return res.status(400).json({ error: "courtId is required" });
+    }
+    if (!date) {
+      return res.status(400).json({ error: "date is required" });
+    }
     if (!slots || !Array.isArray(slots) || slots.length === 0) {
       return res.status(400).json({ error: "No slots provided" });
     }
 
     const updates = slots.map(async (s) => {
       const { time, price, active } = s;
+      
+      if (!time) {
+        throw new Error(`Missing time for slot: ${JSON.stringify(s)}`);
+      }
+      console.log("worked")
       return await Slot.findOneAndUpdate(
-        { courtId, slotTime: time, date },
-        { price, active },
-        { new: true, upsert: true } // create if not exists
+        { courtId: String(courtId), timeRange: time, date },
+        { price: Number(price) || 0, status: Boolean(active) ? "available" : "inactive" },
+        { new: true, upsert: true }
       );
     });
 
@@ -219,7 +230,7 @@ export async function editSlots(req, res) {
     });
 
   } catch (err) {
-    console.error(err);
+    console.error('editSlots error:', err);
     res.status(500).json({ error: err.message });
   }
 }
